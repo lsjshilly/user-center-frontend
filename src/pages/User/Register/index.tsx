@@ -6,15 +6,20 @@ import {
 } from '@ant-design/icons';
 import {
   LoginForm,
+  ProForm,
   ProFormCheckbox,
+  ProFormRadio,
+  ProFormSelect,
   ProFormText,
+  ProFormUploadButton,
 } from '@ant-design/pro-components';
 import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, GetProp, message, Tabs, UploadProps } from 'antd';
 import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { createStyles } from 'antd-style';
+import style from 'antd/es/select/style';
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -78,7 +83,7 @@ const LoginMessage: React.FC<{
   );
 };
 
-const Register: React.FC = () => {
+const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -126,6 +131,20 @@ const Register: React.FC = () => {
   };
   const { status, type: loginType } = userLoginState;
 
+  type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+  const beforeUpload = (file: FileType) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('只能上传 JPG/PNG 文件!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('文件大小必须小于 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
+
   return (
     <div className={styles.container}>
       <Helmet>
@@ -146,15 +165,12 @@ const Register: React.FC = () => {
       >
         <LoginForm
           contentStyle={{
-            minWidth: 280,
+            minWidth: 250,
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
-          initialValues={{
-            autoLogin: true,
-          }}
+          title="编程导航-知识圈子"
+          subTitle={'最好的编程学习交友圈子'}
        
           onFinish={async (values) => {
             await handleSubmit(values as API.LoginParams);
@@ -167,7 +183,7 @@ const Register: React.FC = () => {
             items={[
               {
                 key: 'account',
-                label: '账号密码登录',
+                label: '账号密码注册',
               },
             ]}
           />
@@ -179,7 +195,24 @@ const Register: React.FC = () => {
           )}
           {type === 'account' && (
             <>
+
               <ProFormText
+                label="用户名"
+                name="username"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined />,
+                }}
+                placeholder={'请输入用户名'}
+                rules={[
+                  {
+                    required: true,
+                    message: '用户名不能为空',
+                  },
+                ]}
+              />
+              <ProFormText
+                label="账号"
                 name="userAccount"
                 fieldProps={{
                   size: 'large',
@@ -189,17 +222,13 @@ const Register: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.username.required"
-                        defaultMessage="请输入用户名!"
-                      />
-                    ),
+                    message: '账号不能为空',
                   },
                 ]}
               />
               <ProFormText.Password
-                name="password"
+                label="密码"
+                name="userPassword"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined />,
@@ -212,25 +241,89 @@ const Register: React.FC = () => {
                   },
                 ]}
               />
+              <ProFormText.Password
+                label="确认密码"
+                name="confirmPassword"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined />,
+                }}
+                placeholder={'请输再次入密码'}
+                rules={[
+                  {
+                    required: true,
+                    message: '密码不能为空',
+                  },
+                ]}
+              />
+              <ProForm.Group>
+            
+
+                <ProFormSelect
+                width='xl'
+                initialValue='0'
+                options={[
+                  {
+                    value: '0',
+                    label: '男',
+                  },
+                  {
+                    value: '1',
+                    label: '女',
+                  },
+                ]}
+      
+                name="gender"
+                label="性别"
+                
+              />
+
+            
+        
+            </ProForm.Group>
+
+                <ProFormUploadButton
+                    width='xl'
+                    label="头像"
+                    name="avatar"
+                    title="上传头像"
+                    action="http://localhost:12333/api/upload"
+                    fieldProps={
+                      {
+                        beforeUpload: beforeUpload,
+                        
+                        
+                      }
+                    }
+               />
+
+
+            <ProFormText
+            label="电话"
+              name="phone"
+              fieldProps={{
+                size: 'large',
+                prefix: <UserOutlined />,
+              }}
+              placeholder={'请输入手机号'}
+             
+            />
+
+             <ProFormText
+              label="邮箱"
+              name="email"
+              fieldProps={{
+                size: 'large',
+                prefix: <UserOutlined />,
+              }}
+              placeholder={'请输入邮箱'}
+          
+            />
+
+
             </>
           )}
   
-          <div
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
-            </ProFormCheckbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-            >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
-            </a>
-          </div>
         </LoginForm>
       </div>
       <Footer />
@@ -238,4 +331,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
+export default Login;
