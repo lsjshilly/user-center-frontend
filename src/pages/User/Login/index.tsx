@@ -9,8 +9,8 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet, Link } from '@umijs/max';
+import { Alert, Divider, message, Space, Tabs } from 'antd';
 import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -150,8 +150,8 @@ const Register: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          title="编程导航-用户中心"
+          subTitle={'最好的编程导航交友中心'}
           initialValues={{
             autoLogin: true,
           }}
@@ -220,16 +220,23 @@ const Register: React.FC = () => {
               marginBottom: 24,
             }}
           >
-            <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
-            </ProFormCheckbox>
+          <Space size={'middle'} split={<Divider type="vertical" />}>
+              <ProFormCheckbox noStyle name="autoLogin">
+              {'自动登录'}
+              </ProFormCheckbox>
+          
+              <Link to={'/user/register'}>{'注册账号'}</Link>
+          
             <a
               style={{
                 float: 'right',
               }}
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+            {'忘记密码'}
             </a>
+            </Space>
+
+            
           </div>
         </LoginForm>
       </div>

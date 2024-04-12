@@ -1,5 +1,5 @@
 import { Footer } from '@/components';
-import { login } from '@/services/ant-design-pro/api';
+import { login, register } from '@/services/ant-design-pro/api';
 import {
   LockOutlined,
   UserOutlined,
@@ -86,6 +86,7 @@ const LoginMessage: React.FC<{
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
+  const [avatar, setAvatar] = useState<string>('avatar');
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
   const intl = useIntl();
@@ -102,16 +103,13 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async (values: API.RegisterParams) => {
     try {
       // 登录
-      const msg = await login({ ...values, type });
+      const msg = await register({ ...values, avatar });
       if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultLoginSuccessMessage);
+   
+        message.success('注册成功');
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
@@ -164,6 +162,10 @@ const Login: React.FC = () => {
         }}
       >
         <LoginForm
+          submitter={{
+            searchConfig: { submitText: '注册'}
+          }}
+
           contentStyle={{
             minWidth: 250,
             maxWidth: '75vw',
@@ -287,12 +289,23 @@ const Login: React.FC = () => {
                     label="头像"
                     name="avatar"
                     title="上传头像"
-                    action="http://localhost:12333/api/upload"
+                    action="/api/upload"
                     fieldProps={
                       {
                         beforeUpload: beforeUpload,
-                        
-                        
+                         name: 'avatar',
+                         onChange(info) {
+                          if (info.file.status !== 'uploading') {
+                            console.log(info.file, info.fileList);
+                          }
+                          if (info.file.status === 'done') {
+                            message.success(`${info.file.name} file uploaded successfully`);
+                            setAvatar(info.file.response.data)
+                            console.log('file response', `${info.file.response.data}`)
+                          } else if (info.file.status === 'error') {
+                            message.error(`${info.file.name} file upload failed.`);
+                          }
+                        },
                       }
                     }
                />
