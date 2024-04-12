@@ -100,28 +100,19 @@ const Register: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultLoginSuccessMessage);
+      const user = await login({ ...values, type });
+      if (user.id > 0) {
+
+        message.success('登录成功！');
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(msg);
       // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
     } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
       console.log(error);
-      message.error(defaultLoginFailureMessage);
+      message.error('登录失败，请重试');
     }
   };
   const { status, type: loginType } = userLoginState;
@@ -166,7 +157,7 @@ const Register: React.FC = () => {
             centered
             items={[
               {
-                key: 'account',
+                key: 'userAccount',
                 label: '账号密码登录',
               },
             ]}
@@ -199,7 +190,7 @@ const Register: React.FC = () => {
                 ]}
               />
               <ProFormText.Password
-                name="password"
+                name="userPassword"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined />,

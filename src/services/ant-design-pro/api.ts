@@ -4,9 +4,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<{
-    data: API.CurrentUser;
-  }>('/api/currentUser', {
+  return request<API.CurrentUser>('/user/currentUser', {
     method: 'GET',
     ...(options || {}),
   });
@@ -14,7 +12,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<Record<string, any>>('/user/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -23,7 +21,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/user/register', {
+  return request<API.CurrentUser>('/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -35,7 +33,7 @@ export async function register(body: API.RegisterParams, options?: { [key: strin
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.CurrentUser>('/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

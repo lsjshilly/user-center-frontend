@@ -106,8 +106,8 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.RegisterParams) => {
     try {
       // 登录
-      const msg = await register({ ...values, avatar });
-      if (msg.status === 'ok') {
+      const user = await register({ ...values, avatar });
+      if (user.id> 0) {
    
         message.success('注册成功');
         await fetchUserInfo();
@@ -115,16 +115,11 @@ const Login: React.FC = () => {
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(msg);
+  
       // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
     } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
       console.log(error);
-      message.error(defaultLoginFailureMessage);
+      message.error('注册失败，请重试');
     }
   };
   const { status, type: loginType } = userLoginState;
