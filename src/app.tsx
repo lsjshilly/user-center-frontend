@@ -131,6 +131,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  */
 export const request = {
   ...errorConfig,
-  baseURL: '/api',
+  baseURL: isDev ? '/user-center' : 'http://47.109.85.240/user-center',
   
 };

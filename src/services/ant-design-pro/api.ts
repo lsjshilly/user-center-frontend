@@ -19,6 +19,40 @@ export async function outLogin(options?: { [key: string]: any }) {
 }
 
 
+export async function deleteUser(id: number, options?: { [key: string]: any }) {
+  return request<number>('/user/'+id, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    ...(options || {}),
+  });
+}
+
+
+export async function searchUsers(prams:  {[key: string]: any }, options?: { [key: string]: any }) {
+  return request<API.ResultList<API.CurrentUser>>('/user/search', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params: prams,
+    ...(options || {}),
+  });
+}
+
+/** 登录接口 POST /api/user/register */
+export async function updateUser(body: API.CurrentUser, options?: { [key: string]: any }) {
+  return request<number>('/user/modify', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 登录接口 POST /api/user/register */
 export async function register(body: API.RegisterParams, options?: { [key: string]: any }) {
   return request<API.CurrentUser>('/user/register', {
@@ -30,6 +64,7 @@ export async function register(body: API.RegisterParams, options?: { [key: strin
     ...(options || {}),
   });
 }
+
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {

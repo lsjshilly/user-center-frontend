@@ -44,17 +44,17 @@ export default [
         redirect: '/admin/sub-page',
       },
       {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
+        path: '/admin/user-manage',
+        name: '用户管理',
+        component: './Admin/UserManage',
       },
     ],
   },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
+   {
+    name: '个人设置',
+    icon: 'user',
+    path: '/user/settings',
+    component: './User/settings',
   },
   {
     path: '/',

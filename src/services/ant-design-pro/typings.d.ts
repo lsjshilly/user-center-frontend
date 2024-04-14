@@ -14,6 +14,13 @@ declare namespace API {
     state: number;
   };
 
+
+  type ResultList<T> = {
+    items: T[];
+    total: number;
+  };
+
+
   type LoginResult = {
     status?: string;
     type?: string;

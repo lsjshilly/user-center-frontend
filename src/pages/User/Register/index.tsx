@@ -1,5 +1,5 @@
 import { Footer } from '@/components';
-import { login, register } from '@/services/ant-design-pro/api';
+import { register } from '@/services/ant-design-pro/api';
 import {
   LockOutlined,
   UserOutlined,
@@ -7,19 +7,17 @@ import {
 import {
   LoginForm,
   ProForm,
-  ProFormCheckbox,
-  ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProFormUploadButton,
 } from '@ant-design/pro-components';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
+import { history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
 import { Alert, GetProp, message, Tabs, UploadProps } from 'antd';
 import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { createStyles } from 'antd-style';
-import style from 'antd/es/select/style';
+const isDev = process.env.NODE_ENV === 'development';
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -86,7 +84,7 @@ const LoginMessage: React.FC<{
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const [avatar, setAvatar] = useState<string>('avatar');
+  const [avatar, setAvatar] = useState<string>('');
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
   const intl = useIntl();
@@ -284,7 +282,7 @@ const Login: React.FC = () => {
                     label="头像"
                     name="avatar"
                     title="上传头像"
-                    action="/api/upload"
+                    action= {isDev ? "/user-center/upload" : "http://47.109.85.240/user-center/upload" }
                     fieldProps={
                       {
                         beforeUpload: beforeUpload,
